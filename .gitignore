@@ -1,0 +1,18 @@
+# LaTeX build output
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+main.pdf
+
+# Python
+__pycache__/
+
+# Office lock files
+~$*
+.~lock.*#

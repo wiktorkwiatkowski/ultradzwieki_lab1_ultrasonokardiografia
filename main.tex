@@ -1,14 +1,378 @@
-\documentclass{article}
-\usepackage{graphicx} % Required for inserting images
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pgfplots}
+\usepackage[hidelinks]{hyperref}
 
-\title{ultradzwieki_lab1_ultrasonokardiografia}
-\author{wiktorkwiatkowski143 }
-\date{November 2026}
+\pgfplotsset{compat=1.18}
+\captionsetup{labelsep=period}
+\captionsetup[figure]{name=Rys.}
+\captionsetup[table]{name=Tab.}
+
+% Photos of the USG screen for one case: metal, plastik, siatka, guma.
+\newcommand{\zdjecia}[1]{%
+  \begin{subfigure}{0.48\textwidth}\centering
+    \includegraphics[width=\linewidth]{img/pomiary/metal_#1}\caption{metal}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\textwidth}\centering
+    \includegraphics[width=\linewidth]{img/pomiary/plastik_#1}\caption{plastik}
+  \end{subfigure}\\[2mm]
+  \begin{subfigure}{0.48\textwidth}\centering
+    \includegraphics[width=\linewidth]{img/pomiary/siatka_#1}\caption{siatka}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\textwidth}\centering
+    \includegraphics[width=\linewidth]{img/pomiary/guma_#1}\caption{guma}
+  \end{subfigure}}
+
+% Real vs simulated deflection for one case, data from tabele/<case>.dat.
+\newcommand{\wykres}[1]{%
+  \begin{tikzpicture}
+    \begin{axis}[width=0.95\textwidth, height=7.5cm, grid=major,
+        xlabel={Czas wg zapisu rzeczywistego [ms]}, ylabel={Wychylenie [mm]},
+        legend style={at={(0.5,-0.2)}, anchor=north, legend columns=5}]
+      \addplot[black, very thick, mark=*] table[x=t, y=rzecz] {tabele/#1.dat};
+      \addplot[blue, dashed, mark=square*] table[x=t, y=metal] {tabele/#1.dat};
+      \addplot[orange, dashed, mark=triangle*] table[x=t, y=plastik] {tabele/#1.dat};
+      \addplot[teal, dashed, mark=diamond*] table[x=t, y=siatka] {tabele/#1.dat};
+      \addplot[red, dashed, mark=o] table[x=t, y=guma] {tabele/#1.dat};
+      \legend{Rzeczywiste, Metal, Plastik, Siatka, Guma}
+    \end{axis}
+  \end{tikzpicture}}
+
+% Photos, table and plot for one simulated case.
+\newcommand{\przypadek}[2]{%
+  \begin{figure}[H]
+    \centering
+    \zdjecia{#1}
+    \caption{Ultrasonokardiogramy fantomu w prezentacji M -- #2.}
+  \end{figure}
+  \begin{table}[H]
+    \centering\small
+    \input{tabele/#1}
+    \caption{Wychylenia punktów charakterystycznych -- #2. $\Delta y$ -- różnica
+      względem poprzedniego punktu, $y$ -- wychylenie względem osi OX [mm].}
+  \end{table}
+  \begin{figure}[H]
+    \centering
+    \wykres{#1}
+    \caption{Porównanie przebiegu rzeczywistego z symulacjami -- #2.}
+  \end{figure}}
 
 \begin{document}
 
-\maketitle
+\begin{titlepage}
+  \centering
+  \includegraphics[width=0.85\textwidth]{img/logo_PWr_kolor_poziom.png}
 
-\section{Introduction}
+  \vspace{1.2cm}
+
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|>{\centering}m{4.1cm}|>{\centering}m{6.1cm}|>{\centering}m{4.2cm}|}
+    \hline
+    \small Skład grupy\\ wykonującej ćwiczenie:
+    & \large Przetwarzanie sygnałów ultradźwiękowych w~zastosowaniach technicznych i~medycznych
+    & \small Termin zajęć:\\ Wtorek (parzysty)\\ godz. 16:15 \tabularnewline
+    \hline
+    \small 1. Jakub Gyziejewski\\ XXXXXX\\[2ex]
+           2. Wiktor Kwiatkowski\\ 275423\\[2ex]
+           3. Piotr Siembab\\ XXXXXX
+    & \Large Temat ćwiczenia:\\ Ultrasonokardiografia.\\ Pomiar amplitudy ruchu
+      zastawki dwudzielnej serca.
+    & \small Data wykonania ćwiczenia:\\ 20.10.2026 r.\\[2ex]
+      Data oddania sprawozdania:\\ 03.11.2026 r.\\[2ex] Ocena: \tabularnewline
+    \hline
+  \end{tabular}
+\end{titlepage}
+
+\section{Cel ćwiczenia}
+
+Celem ćwiczenia było poznanie zasady pomiaru ruchu zastawki dwudzielnej (mitralnej) serca
+za pomocą ultrasonokardiografu pracującego w~prezentacji M oraz ocena, na ile sztuczne
+zastawki wykonane z~różnych materiałów nadają się do symulacji jej pracy. Na fantomie ruchu
+zastawki odtworzono prawidłową pracę zastawki oraz pięć przypadków chorobowych dla czterech
+materiałów płytki (metal, plastik, siatka z~włókna, guma). Wychylenia punktów
+charakterystycznych odczytane z~ekranu aparatu USG porównano z~pomiarami rzeczywistymi
+i~dla każdego przypadku wyznaczono błąd średniokwadratowy symulacji.
+
+\section{Przygotowanie do zajęć}
+
+\subsection{Metoda echa impulsowego}
+
+Ultrasonokardiograf działa w~oparciu o~metodę echa impulsowego. Głowica ultradźwiękowa
+wysyła krótki impuls, który rozchodzi się w~tkankach i~częściowo odbija na granicach
+ośrodków o~różnej impedancji akustycznej $Z = \rho c$. Ta sama głowica odbiera następnie
+powracające echa. Znając prędkość dźwięku w~ośrodku $c$ i~czas $t$ między nadaniem impulsu
+a~odebraniem echa, wyznacza się odległość od głowicy do granicy odbijającej:
+\begin{equation}
+  d = \frac{c\,t}{2},
+\end{equation}
+gdzie czynnik $2$ wynika z~tego, że fala pokonuje drogę do granicy i~z~powrotem.
+W~tkankach miękkich przyjmuje się $c \approx 1540$~m/s, co daje ok. $13$~$\mu$s opóźnienia
+echa na każdy centymetr głębokości.
+
+\subsection{Prezentacje A, M i 2D}
+
+Odebrane echa można zobrazować na kilka sposobów (rys.~\ref{fig:prezentacje}):
+\begin{itemize}
+  \item \textbf{prezentacja A} (\emph{amplitude}) -- na osi poziomej odkładany jest czas,
+    czyli głębokość, a~na osi pionowej amplituda ech. Ruch obiektu objawia się
+    przesuwaniem się jego echa wzdłuż podstawy czasu,
+  \item \textbf{prezentacja M} (\emph{motion}, dawniej TM -- \emph{time-motion}) --
+    amplituda echa moduluje jasność plamki (modulacja ,,Z''), a~linia głębokości jest
+    powoli przesuwana prostopadle do swojego kierunku. Struktury nieruchome rysują linie
+    proste, a~ruchome -- krzywe odwzorowujące ich wychylenie w~czasie,
+  \item \textbf{prezentacja 2D} -- obraz dwuwymiarowy w~czasie rzeczywistym, uzyskiwany
+    z~jednej głowicy wykonującej ruch obrotowy lub wahadłowy albo z~wielu przetworników.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{img/prezentacje_a_m.jpg}
+  \caption{Sposób otrzymywania obrazu ruchomego obiektu w~prezentacjach A, M i~2D
+    \cite{golanowski}.}
+  \label{fig:prezentacje}
+\end{figure}
+
+\subsection{Rekonstrukcja obrazu w prezentacji M}
+
+W~prezentacji M głowica jest nieruchoma i~wysyła wiązkę stale wzdłuż tej samej linii.
+Każdy kolejny impuls daje jedną linię obrazu: echa z~różnych głębokości są zamieniane na
+punkty o~jasności proporcjonalnej do ich amplitudy i~ustawiane wzdłuż osi pionowej zgodnie
+z~zależnością $d = ct/2$. Kolejne linie są rysowane obok siebie, więc oś pozioma staje się
+osią czasu. Gdy granica tkanki (np. płatek zastawki) zbliża się do głowicy lub od niej
+oddala, jej punkt przesuwa się po kolejnych liniach i~powstaje krzywa ruchu
+(rys.~\ref{fig:zasada_m}). Z~naniesionych skal głębokości i~czasu można odczytać wychylenie
+struktury, jej prędkość oraz czasy otwierania i~zamykania zastawki.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.38\textwidth]{img/prezentacja_m.jpg}
+  \caption{Zasada prezentacji M: G -- głowica, W -- wiązka, PK -- prawa komora,
+    LK -- lewa komora, LP -- lewy przedsionek, P -- podstawa czasu, M -- obraz w~prezentacji
+    M, EKG -- elektrokardiogram \cite{golanowski}.}
+  \label{fig:zasada_m}
+\end{figure}
+
+W~opisanym w~\cite{golanowski} laboratoryjnym zestawie ultrasonokardiograficznym obraz
+w~prezentacji A powstaje na ekranie defektoskopu ultradźwiękowego DJ-23P, a~obraz
+w~prezentacji M -- na ekranie oscyloskopu OS-150. Przystawka USK-12 zawiera generator
+kwarcowy $500$~kHz z~dzielnikami częstotliwości, który synchronizuje pracę zestawu
+i~wytwarza znaczniki czasu (co $200$~ms) i~głębokości (co $10$~$\mu$s). Analogowy przetwornik
+czas--napięcie mierzy czas pojawienia się pierwszego echa w~bramce monitora defektoskopu
+i~zamienia go na napięcie proporcjonalne do głębokości, które może być zapisane
+rejestratorem analogowym. Ultrasonokardiogram otrzymuje się w~dwóch cyklach: w~pierwszym
+rysowane są znaczniki głębokości, w~drugim właściwy przebieg ze znacznikami czasu.
+Współczesne aparaty USG, takie jak użyty w~ćwiczeniu, realizują te same funkcje cyfrowo
+i~pozwalają mierzyć odległości bezpośrednio na ekranie za pomocą znaczników.
+
+\subsection{Pomiar wychylenia zastawki dwudzielnej}
+
+Aby uzyskać charakterystyczny zapis zastawki dwudzielnej, głowicę (ok. $2$~MHz) przykłada
+się w~czwartym lewym międzyżebrzu przy mostku. Echo przedniego płatka zastawki pojawia się
+tuż za echem przegrody, w~świetle lewej komory, w~odległości ok. $5$--$7$~cm od głowicy.
+Płatek wykonuje szybki ruch otwarcia w~kierunku głowicy, następnie powolne zamykanie
+w~okresie rozkurczu komory, ponowne otwarcie po skurczu przedsionka i~zamknięcie na czas
+skurczu komory (rys.~\ref{fig:krzywa}). Na krzywej wyróżnia się punkty charakterystyczne
+D, E, F, A, C. Wychylenie zastawki to odległość tych punktów od linii odniesienia, mierzona
+wzdłuż osi głębokości. Przy zmianach chorobowych kształt krzywej się zmienia, np. przy
+zwężeniu zastawki zamykanie jest spowolnione, a~przy wypadaniu płatek cofa się w~czasie
+skurczu w~stronę przedsionka.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{img/krzywa_zastawki.jpg}
+  \caption{Ultrasonokardiogram przedniego płatka zastawki dwudzielnej
+    \cite{golanowski, instrukcja}.}
+  \label{fig:krzywa}
+\end{figure}
+
+\section{Stanowisko pomiarowe}
+
+Stanowisko (rys.~\ref{fig:stanowisko}) składa się z~fantomu ruchu zastawki oraz aparatu
+USG. Komputer PC steruje przez interfejs RS-232 sterownikiem silników krokowych, który za
+pośrednictwem mechanizmu przesuwu i~aluminiowego ramienia porusza płytką zanurzoną
+w~szklanym zbiorniku z~wodą. Płytka imituje przedni płatek zastawki i~porusza się zgodnie
+z~funkcją ruchu wyznaczoną z~rzeczywistych ultrasonokardiogramów. Do ścianki zbiornika
+przyłożona jest liniowa głowica USG, a~aparat rejestruje ruch płytki w~prezentacji M.
+Badano cztery płytki wykonane z~metalu, plastiku, siatki z~włókna i~gumy.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.45\textwidth}\centering
+    \includegraphics[width=\linewidth]{img/stanowisko.jpg}\caption{}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.53\textwidth}\centering
+    \includegraphics[width=\linewidth]{img/schemat_fantomu.jpg}\caption{}
+  \end{subfigure}
+  \caption{Stanowisko pomiarowe: a) widok, b) schemat blokowy fantomu ruchu zastawki serca
+    \cite{instrukcja}.}
+  \label{fig:stanowisko}
+\end{figure}
+
+\section{Przebieg pomiarów i metoda opracowania}
+
+Dla każdej z~czterech płytek zasymulowano sześć przypadków ruchu zastawki: prawidłową
+pracę, małe zwężenie, ciasne zwężenie, niedomykalność, wypadanie oraz wypadanie typu
+mezotelesystolicznego. Po zatrzymaniu obrazu w~prezentacji M zaznaczano znacznikami
+,,+'' kolejne punkty charakterystyczne przebiegu, zaczynając od punktu leżącego na linii
+spoczynkowej płytki. Aparat wyświetla przy każdym znaczniku odległość od poprzedniego
+znacznika w~milimetrach. Ekran fotografowano, a~wartości odczytano ze zdjęć.
+
+\subsection{Przeliczenie układów odniesienia}
+
+Wartości rzeczywiste \cite{pomiary} podane są jako wychylenia względem osi czasu OX,
+natomiast aparat USG podaje odległości między kolejnymi punktami (wartości bezwzględne).
+Znak każdej różnicy $\Delta y_i$ ustalono na podstawie kierunku zmiany na ekranie (ruch
+w~górę -- dodatni). Za oś OX przyjęto pierwszy znacznik, leżący na linii spoczynkowej.
+Wychylenie $i$-tego punktu względem osi OX oraz przeliczenie odwrotne wyrażają się wzorami:
+\begin{equation}
+  y_i = \sum_{k=1}^{i} \Delta y_k, \qquad \Delta y_i = y_i - y_{i-1}, \qquad y_0 = 0.
+\end{equation}
+Do dalszej analizy wybrano układ względem osi OX, ponieważ w~nim podane są pomiary
+rzeczywiste. W~tabelach wyników zamieszczono jednak oba układy, zarówno dla danych
+rzeczywistych, jak i~symulowanych. Zgodnie z~instrukcją porównywano tylko wychylenia
+punktów, a~nie czasy ich wystąpienia, ponieważ fantom nie odtwarza tak szybkich zmian
+w~czasie. Na wykresach punkty symulacji naniesiono w~chwilach odpowiadających zapisowi
+rzeczywistemu wyłącznie dla czytelności.
+
+\subsection{Błąd symulacji}
+
+Jako miarę błędu symulacji przyjęto błąd średniokwadratowy:
+\begin{equation}
+  \mathrm{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} \left( y_i^{\mathrm{sym}} -
+    y_i^{\mathrm{rz}} \right)^2},
+\end{equation}
+gdzie $N$ -- liczba punktów charakterystycznych przypadku, $y_i^{\mathrm{sym}}$ --
+wychylenie zmierzone na fantomie, $y_i^{\mathrm{rz}}$ -- wychylenie rzeczywiste.
+Obliczenia wykonano w~arkuszu kalkulacyjnym MS Excel (plik \texttt{obliczenia.xlsx}
+dołączony do sprawozdania).
+
+\section{Wyniki pomiarów}
+
+\subsection{Prawidłowa praca zastawki}
+\przypadek{prawidlowa}{prawidłowa praca zastawki}
+
+Wszystkie płytki odtworzyły kształt przebiegu z~siedmioma punktami. Maksymalne wychylenie
+zawyżono o~$1$--$2$~mm. Metal, plastik i~guma dobrze odwzorowały spadek do ok. $8$~mm po
+pierwszym maksimum. Siatka go nie odtworzyła ($13$~mm zamiast $8$~mm), przez co jej błąd
+jest wyraźnie największy.
+
+\subsection{Małe zwężenie zastawki dwudzielnej}
+\przypadek{male_zwezenie}{małe zwężenie zastawki dwudzielnej}
+
+Metal, plastik i~guma dały niemal identyczne odczyty z~maksimum zawyżonym o~$2$~mm.
+W~zapisie z~siatki zanikło niewielkie obniżenie po maksimum (trzy punkty na poziomie
+$31$~mm), a~przebieg nie wrócił do linii spoczynkowej.
+
+\subsection{Ciasne zwężenie zastawki dwudzielnej}
+\przypadek{ciasne_zwezenie}{ciasne zwężenie zastawki dwudzielnej}
+
+Najbliższy zapisowi rzeczywistemu był przebieg z~gumy. Dla plastiku i~siatki pierwszy
+punkt odczytano znacznie wyżej niż w~zapisie rzeczywistym ($7$ i~$6$~mm zamiast $1$~mm),
+co przesunęło też kolejne wartości liczone względem osi OX.
+
+\subsection{Niedomykalność zastawki dwudzielnej}
+\przypadek{niedomykalnosc}{niedomykalność zastawki dwudzielnej}
+
+Metal, plastik i~guma odtworzyły przebieg z~maksimum zawyżonym o~$1$--$3$~mm. Na siatce
+spadek po maksimum był za mały ($3$~mm zamiast $5$~mm), a~przebieg zakończył się
+$5$~mm nad linią spoczynkową.
+
+\subsection{Wypadanie zastawki dwudzielnej}
+\przypadek{wypadanie}{wypadanie zastawki dwudzielnej}
+
+Metal, plastik i~guma dały bardzo zbliżone wyniki, z~głównym maksimum zawyżonym
+o~$2$~mm. Na siatce minimum po pierwszym szczycie było płytsze ($13$~mm zamiast $8$~mm).
+
+\subsection{Wypadanie zastawki typu mezotelesystolicznego}
+\przypadek{wypadanie_mezotel}{wypadanie zastawki typu mezotelesystolicznego}
+
+Jest to najbardziej złożony przebieg (osiem punktów), mimo to wszystkie materiały
+odtworzyły go dobrze. Siatka ponownie nie zeszła po pierwszym maksimum do linii
+spoczynkowej ($4$~mm zamiast $0$~mm).
+
+\section{Analiza błędów}
+
+Zestawienie błędów średniokwadratowych dla wszystkich materiałów i~przypadków przedstawia
+tabela~\ref{tab:rmse}. Pogrubiono najmniejszy błąd w~każdym wierszu.
+
+\begin{table}[H]
+  \centering\small
+  \input{tabele/rmse}
+  \caption{Błąd średniokwadratowy symulacji RMSE [mm] względem pomiarów rzeczywistych.}
+  \label{tab:rmse}
+\end{table}
+
+Najlepsze materiały dla poszczególnych przypadków:
+\begin{itemize}
+  \item prawidłowa praca zastawki -- guma ($0{,}76$~mm),
+  \item małe zwężenie -- metal i~guma ($1{,}34$~mm),
+  \item ciasne zwężenie -- guma ($1{,}00$~mm),
+  \item niedomykalność -- metal ($1{,}50$~mm),
+  \item wypadanie -- plastik ($1{,}22$~mm),
+  \item wypadanie typu mezotelesystolicznego -- guma ($0{,}94$~mm).
+\end{itemize}
+
+Najmniejszy średni błąd dla wszystkich przypadków uzyskano dla gumy ($1{,}19$~mm),
+następnie dla metalu ($1{,}45$~mm) i~plastiku ($1{,}76$~mm). Siatka z~włókna dała błąd
+około dwa razy większy od pozostałych materiałów ($3{,}08$~mm) i~była najgorsza
+w~każdym przypadku.
+
+Na wynik wpływa kilka źródeł błędów:
+\begin{itemize}
+  \item rozdzielczość odczytu aparatu wynosi $1$~mm, a~znaczniki ustawiano ręcznie na
+    rozmytej krawędzi echa. Różnice RMSE między gumą, metalem i~plastikiem są rzędu
+    $0{,}5$~mm, czyli porównywalne z~tą niepewnością. Każdy przypadek zmierzono tylko raz,
+  \item w~układzie względem osi OX błędy kolejnych różnic się sumują, więc błędnie
+    postawiony znacznik na początku przebiegu przesuwa wszystkie dalsze punkty (np. ciasne
+    zwężenie dla plastiku),
+  \item główne maksimum było prawie zawsze zawyżone o~$1$--$3$~mm. Jedną z~możliwych
+    przyczyn jest to, że aparat przelicza czas na odległość dla $c = 1540$~m/s, a~w~wodzie
+    $c \approx 1480$~m/s. Odległości w~zbiorniku są wtedy zawyżone o~ok. $4\,\%$, co dla
+    wychylenia $30$~mm daje ok. $1$~mm,
+  \item echo od siatki jest słabe i~szerokie, ponieważ fala częściowo przechodzi przez
+    oczka siatki. Przebieg jest przez to wygładzony, a~małe zmiany wychylenia
+    ($2$--$5$~mm) zanikają. Płytki lite dają wyraźną, cienką krawędź echa.
+\end{itemize}
+
+\section{Wnioski}
+
+\begin{itemize}
+  \item Prezentacja M pozwala odczytać amplitudę ruchu struktur serca jako odległość punktów
+    krzywej od linii odniesienia wzdłuż osi głębokości. Odległość wynika z~czasu przelotu
+    impulsu, $d = ct/2$, więc dokładność zależy od przyjętej prędkości dźwięku.
+  \item Fantom z~płytkami litymi (guma, metal, plastik) odtworzył kształt wszystkich sześciu
+    przebiegów z~błędem średniokwadratowym od $0{,}76$ do $2{,}90$~mm. Pozwala to
+    rozróżnić prawidłową pracę zastawki i~poszczególne zmiany chorobowe.
+  \item Ogólnie najlepiej do symulacji wszystkich przypadków nadaje się guma (średni RMSE
+    $1{,}19$~mm). Była najlepsza w~czterech z~sześciu przypadków (w~jednym ex aequo
+    z~metalem). Metal był niewiele gorszy
+    ($1{,}45$~mm) i~najlepszy dla niedomykalności, a~plastik -- dla wypadania zastawki.
+  \item Siatka z~włókna najsłabiej nadaje się do symulacji (średni RMSE $3{,}08$~mm), bo
+    jej rozmyte echo wygładza przebieg i~nie pozwala odtworzyć mniejszych zmian
+    wychylenia.
+  \item Wychylenia odczytane z~aparatu są systematycznie nieco większe od rzeczywistych.
+    Różnice między najlepszymi materiałami są porównywalne z~rozdzielczością odczytu,
+    dlatego do pewniejszego rozstrzygnięcia należałoby powtórzyć pomiary kilka razy.
+\end{itemize}
+
+\begin{thebibliography}{9}
+  \bibitem{golanowski} J. Golanowski, T. Gudra, \emph{Pomiarowe urządzenia ultradźwiękowe},
+    rozdz. 12: Ultrasonokardiografia, s. 129--135, Politechnika Wrocławska.
+  \bibitem{nowicki} A. Nowicki, \emph{Ultradźwięki w~medycynie. Wprowadzenie do
+    współczesnej ultrasonografii}, Wydawnictwo IPPT PAN, Warszawa 2010.
+  \bibitem{instrukcja} \emph{PSUwZTiM -- ćwiczenie 1. Ultrasonokardiografia. Pomiar
+    amplitudy ruchu zastawki dwudzielnej serca}, instrukcja do ćwiczenia.
+  \bibitem{pomiary} \emph{Rzeczywiste pomiary zastawki}, tabele 7.1--7.6, materiały do
+    ćwiczenia.
+\end{thebibliography}
 
 \end{document}
