@@ -98,7 +98,7 @@ def case_table(points, rmse):
     lines = [
         f"\\begin{{tabular}}{{cc{' cc' * len(groups)} cccc}}",
         "\\toprule",
-        f"Lp. & $t$ [ms] & {head} & \\multicolumn{{4}}{{c}}{{Odchyłka}} \\\\",
+        f"Lp. & $t$ [ms] & {head} & \\multicolumn{{4}}{{c}}{{Odchylenie}} \\\\",
         f" &  & {sub} & " + " & ".join(MATERIALS.values()) + " \\\\",
         "\\midrule",
     ]
