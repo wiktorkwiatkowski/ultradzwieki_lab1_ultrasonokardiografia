@@ -112,7 +112,7 @@ def case_table(points, rmse):
     lines = [
         "\\begin{tabular}{cc c cccc}",
         "\\toprule",
-        "Lp. & $t$ [ms] & \\multicolumn{5}{c}{$y$ [mm]} \\\\",
+        "Lp. & Czas [ms] & \\multicolumn{5}{c}{$y$ [mm]} \\\\",
         "\\cmidrule(lr){3-7}",
         f" &  & Rzeczywiste & {materials} \\\\",
         "\\midrule",
@@ -124,7 +124,7 @@ def case_table(points, rmse):
     lines += [
         "\\begin{tabular}{cc cccc}",
         "\\toprule",
-        "Lp. & $t$ [ms] & \\multicolumn{4}{c}{Odchylenie [mm]} \\\\",
+        "Lp. & Czas [ms] & \\multicolumn{4}{c}{Odchylenie [mm]} \\\\",
         "\\cmidrule(lr){3-6}",
         f" &  & {materials} \\\\",
         "\\midrule",
