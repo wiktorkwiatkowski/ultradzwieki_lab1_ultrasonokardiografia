@@ -29,6 +29,8 @@ MATERIALS = {"metal": "Metal", "plastik": "Plastik", "siatka": "Siatka", "guma":
 # real y for each material), then the RMSE row.
 HEADER_ROWS = 3
 FIRST_MATERIAL_COL = 4
+# Columns further right are helpers for the chart, not part of the table.
+TABLE_COLS = 16
 
 
 def find_soffice():
@@ -84,7 +86,7 @@ def fmt(x):
 
 
 def case_data(rows):
-    points = rows[HEADER_ROWS:-1]
+    points = [r[:TABLE_COLS] for r in rows[HEADER_ROWS:-1]]
     rmse = {m: float(rows[-1][FIRST_MATERIAL_COL + 2 * g]) for g, m in enumerate(MATERIALS)}
     return points, rmse
 
