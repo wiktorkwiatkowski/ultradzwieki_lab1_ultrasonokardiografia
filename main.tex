@@ -70,7 +70,7 @@
     \centering
     \wykres{#1}
     \caption{Porównanie przebiegu rzeczywistego z symulacjami -- #2. Numery oznaczają
-      punkty charakterystyczne przebiegu rzeczywistego (Lp. w tabeli).}
+      punkty charakterystyczne przebiegu rzeczywistego.}
   \end{figure}}
 
 \begin{document}
@@ -84,17 +84,16 @@
   \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{|>{\centering}m{4.1cm}|>{\centering}m{6.1cm}|>{\centering}m{4.2cm}|}
     \hline
-    \small Skład grupy\\ wykonującej ćwiczenie:
+    \small Skład grupy:
     & \large Przetwarzanie sygnałów ultradźwiękowych w~zastosowaniach technicznych i~medycznych
     & \small Termin zajęć:\\ Wtorek (parzysty)\\ godz. 16:15 \tabularnewline
     \hline
     \small 1. Jakub Gyziejewski\\ XXXXXX\\[2ex]
            2. Wiktor Kwiatkowski\\ 275423\\[2ex]
-           3. Piotr Siembab\\ XXXXXX
+           3. Piotr Siembab\\ 275418
     & \Large Temat ćwiczenia:\\ Ultrasonokardiografia.\\ Pomiar amplitudy ruchu
       zastawki dwudzielnej serca.
-    & \small Data wykonania ćwiczenia:\\ 20.10.2026 r.\\[2ex]
-      Data oddania sprawozdania:\\ 03.11.2026 r.\\[2ex] Ocena: \tabularnewline
+    & \small Data wykonania ćwiczenia:\\ 20.10.2026 r. \tabularnewline
     \hline
   \end{tabular}
 \end{titlepage}
@@ -115,8 +114,7 @@ i~dla każdego przypadku wyznaczono błąd średniokwadratowy symulacji.
 
 Ultrasonokardiograf działa w~oparciu o~metodę echa impulsowego. Głowica ultradźwiękowa
 wysyła krótki impuls, który rozchodzi się w~tkankach i~częściowo odbija na granicach
-ośrodków o~różnej impedancji akustycznej $Z = \rho c$. Ta sama głowica odbiera następnie
-powracające echa. Znając prędkość dźwięku w~ośrodku $c$ i~czas $t$ między nadaniem impulsu
+ośrodków o~różnej impedancji akustycznej $Z = \rho c$, gdzie $\rho$ oznacza gęstość ośrodka [kg/m³], a $c$ prędkość rozchodzenia się fali ultradźwiękowej w tym ośrodku [m/s]. Ta sama głowica odbiera następnie powracające echa. Znając $c$ i~czas $t$ między nadaniem impulsu
 a~odebraniem echa, wyznacza się odległość od głowicy do granicy odbijającej:
 \begin{equation}
   d = \frac{c\,t}{2},
@@ -132,7 +130,7 @@ Odebrane echa można zobrazować na kilka sposobów (rys.~\ref{fig:prezentacje})
   \item \textbf{prezentacja A} (\emph{amplitude}) -- na osi poziomej odkładany jest czas,
     czyli głębokość, a~na osi pionowej amplituda ech. Ruch obiektu objawia się
     przesuwaniem się jego echa wzdłuż podstawy czasu,
-  \item \textbf{prezentacja M} (\emph{motion}, dawniej TM -- \emph{time-motion}) --
+  \item \textbf{prezentacja M} (\emph{motion}) --
     amplituda echa moduluje jasność plamki (modulacja ,,Z''), a~linia głębokości jest
     powoli przesuwana prostopadle do swojego kierunku. Struktury nieruchome rysują linie
     proste, a~ruchome -- krzywe odwzorowujące ich wychylenie w~czasie,
@@ -259,16 +257,15 @@ Jako miarę błędu symulacji przyjęto błąd średniokwadratowy:
 \end{equation}
 gdzie $N$ -- liczba punktów charakterystycznych przypadku, $y_i^{\mathrm{sym}}$ --
 wychylenie zmierzone na fantomie, $y_i^{\mathrm{rz}}$ -- wychylenie rzeczywiste.
-Obliczenia wykonano w~arkuszu kalkulacyjnym MS Excel (plik \texttt{obliczenia.xlsx}
-dołączony do sprawozdania).
+Obliczenia wykonano w~arkuszu kalkulacyjnym.
 
 \section{Wyniki pomiarów}
 
 \subsection{Prawidłowa praca zastawki}
 \przypadek{prawidlowa}{prawidłowa praca zastawki}{Najmniejszy błąd uzyskano dla gumy
-  (RMSE $0{,}76$~mm), której odchyłki w~żadnym punkcie nie przekroczyły $1$~mm. Metal
+  ($0{,}76$~mm), której odchyłki w~żadnym punkcie nie przekroczyły $1$~mm. Metal
   i~plastik dały zbliżone wyniki ($1{,}51$ i~$1{,}46$~mm). Największy błąd wystąpił dla
-  siatki ($3{,}02$~mm), z~odchyłką $5$~mm w~punktach 2 i~3.}
+  siatki ($3{,}02$~mm), z~odchyleniem $5$~mm w~punktach 2 i~3.}
 
 Wszystkie płytki odtworzyły kształt przebiegu z~siedmioma punktami. Maksymalne wychylenie
 zawyżono o~$1$--$2$~mm. Metal, plastik i~guma dobrze odwzorowały spadek do ok. $8$~mm po
@@ -277,7 +274,7 @@ jest wyraźnie największy.
 
 \subsection{Małe zwężenie zastawki dwudzielnej}
 \przypadek{male_zwezenie}{małe zwężenie zastawki dwudzielnej}{Metal i~guma dały najmniejszy,
-  jednakowy błąd (RMSE $1{,}34$~mm), ponieważ ich wychylenia względem osi OX są identyczne.
+  jednakowy błąd ($1{,}34$~mm), ponieważ ich wychylenia względem osi OX są identyczne.
   Plastik różni się od nich tylko ostatnim punktem ($1{,}41$~mm). Błąd siatki jest ok. trzy
   razy większy ($4{,}27$~mm), z~odchyłką do $6$~mm w~punkcie 3.}
 
@@ -287,7 +284,7 @@ $31$~mm), a~przebieg nie wrócił do linii spoczynkowej.
 
 \subsection{Ciasne zwężenie zastawki dwudzielnej}
 \przypadek{ciasne_zwezenie}{ciasne zwężenie zastawki dwudzielnej}{Najmniejszy błąd dała guma
-  (RMSE $1{,}00$~mm), a~jej największa odchyłka to $2$~mm w~ostatnim punkcie. Dla metalu
+  ($1{,}00$~mm), a~jej największa odchyłka to $2$~mm w~ostatnim punkcie. Dla metalu
   RMSE wyniósł $1{,}73$~mm. Błąd plastiku ($2{,}90$~mm) wynika głównie z~odchyłki $6$~mm
   w~punkcie 1, a~na błąd siatki ($3{,}29$~mm) składają się odchyłka $5$~mm w~punkcie 1
   oraz $4$ i~$3$~mm w~dwóch ostatnich punktach.}
@@ -298,7 +295,7 @@ ale drugi punkt ma już wartość zgodną z~nim ($6$~mm), więc była to odchył
 
 \subsection{Niedomykalność zastawki dwudzielnej}
 \przypadek{niedomykalnosc}{niedomykalność zastawki dwudzielnej}{Najmniejszy błąd dał metal
-  (RMSE $1{,}50$~mm), a~następnie guma ($1{,}73$~mm) i~plastik ($2{,}18$~mm). Dla wszystkich
+  ($1{,}50$~mm), a~następnie guma ($1{,}73$~mm) i~plastik ($2{,}18$~mm). Dla wszystkich
   materiałów pierwszy punkt jest zaniżony o~$2$--$3$~mm. Największy błąd dała siatka
   ($3{,}50$~mm), której odchyłka narasta do $5$~mm w~ostatnim punkcie.}
 
@@ -308,7 +305,7 @@ $5$~mm nad linią spoczynkową.
 
 \subsection{Wypadanie zastawki dwudzielnej}
 \przypadek{wypadanie}{wypadanie zastawki dwudzielnej}{Najmniejszy błąd dał plastik
-  (RMSE $1{,}22$~mm), a~guma ($1{,}35$~mm) i~metal ($1{,}41$~mm) różnią się od niego o~mniej
+  ($1{,}22$~mm), a~guma ($1{,}35$~mm) i~metal ($1{,}41$~mm) różnią się od niego o~mniej
   niż $0{,}2$~mm. Wszystkie materiały zawyżyły punkt 1 o~$2$~mm. Błąd siatki ($2{,}45$~mm)
   wynika głównie z~odchyłki $5$~mm w~punkcie 2.}
 
@@ -317,7 +314,7 @@ o~$2$~mm. Na siatce minimum po pierwszym szczycie było płytsze ($13$~mm zamias
 
 \subsection{Wypadanie zastawki typu mezotelesystolicznego}
 \przypadek{wypadanie_mezotel}{wypadanie zastawki typu mezotelesystolicznego}{Najmniejszy błąd
-  dała guma (RMSE $0{,}94$~mm), a~następnie metal ($1{,}22$~mm) i~plastik ($1{,}37$~mm).
+  dała guma ($0{,}94$~mm), a~następnie metal ($1{,}22$~mm) i~plastik ($1{,}37$~mm).
   Siatka dała największy błąd ($1{,}97$~mm), z~odchyłką $4$~mm w~punkcie 3, ale jest to
   jej najmniejszy błąd spośród wszystkich przypadków.}
 
