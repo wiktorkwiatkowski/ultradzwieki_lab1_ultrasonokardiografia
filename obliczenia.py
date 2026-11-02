@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Reads the results computed in obliczenia.xlsx and writes LaTeX tables and
-pgfplots data to tabele/. All calculations live in the spreadsheet; this script
-only exports them. Requires LibreOffice (soffice) to evaluate the formulas."""
+"""Reads the results computed in obliczenia.xlsx and writes LaTeX tables and the
+chart PDF to tabele/. All calculations and charts live in the spreadsheet; this
+script only exports them. Requires LibreOffice (soffice) to read the workbook."""
 
 import csv
 import shutil
@@ -25,7 +25,8 @@ CASES = {
 MATERIALS = {"metal": "Metal", "plastik": "Plastik", "siatka": "Siatka", "guma": "Guma"}
 
 # Case sheet layout: rows 1-3 are the title and headers, then one row per point
-# (Lp., t, real dy, real y, then dy and y for each material), then the RMSE row.
+# (Lp., t, real dy, real y, dy and y for each material, deviation of y from the
+# real y for each material), then the RMSE row.
 HEADER_ROWS = 3
 FIRST_MATERIAL_COL = 4
 
@@ -41,29 +42,41 @@ def find_soffice():
     raise SystemExit("LibreOffice (soffice) not found, install it from libreoffice.org")
 
 
+def convert(target, outdir):
+    # Separate profile so the export also works while LibreOffice is open.
+    subprocess.run(
+        [
+            find_soffice(),
+            f"-env:UserInstallation={(outdir / 'profile').as_uri()}",
+            "--headless",
+            "--convert-to",
+            target,
+            "--outdir",
+            str(outdir),
+            str(XLSX),
+        ],
+        check=True,
+        capture_output=True,
+    )
+
+
 def read_sheets():
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        # Separate profile so the export also works while LibreOffice is open.
         # Filter options: comma, quote, UTF-8, en-US numbers, raw values, all sheets.
-        subprocess.run(
-            [
-                find_soffice(),
-                f"-env:UserInstallation={(tmp / 'profile').as_uri()}",
-                "--headless",
-                "--convert-to",
-                "csv:Text - txt - csv (StarCalc):44,34,76,1,,1033,false,false,false,false,false,-1",
-                "--outdir",
-                str(tmp),
-                str(XLSX),
-            ],
-            check=True,
-            capture_output=True,
-        )
+        convert("csv:Text - txt - csv (StarCalc):44,34,76,1,,1033,false,false,false,false,false,-1", tmp)
         return {
             p.stem.removeprefix(f"{XLSX.stem}-"): list(csv.reader(p.open(encoding="utf-8")))
             for p in tmp.glob("*.csv")
         }
+
+
+def export_charts():
+    # One page per sheet, main.tex crops the chart out of each case page.
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        convert("pdf", tmp)
+        shutil.copyfile(tmp / f"{XLSX.stem}.pdf", OUT / "wykresy.pdf")
 
 
 def fmt(x):
@@ -81,17 +94,17 @@ def case_table(points, rmse):
     head = " & ".join(f"\\multicolumn{{2}}{{c}}{{{g}}}" for g in groups)
     sub = " & ".join(["$\\Delta y$ & $y$"] * len(groups))
     lines = [
-        f"\\begin{{tabular}}{{cc{' cc' * len(groups)}}}",
+        f"\\begin{{tabular}}{{cc{' cc' * len(groups)} cccc}}",
         "\\toprule",
-        f"Lp. & $t$ [ms] & {head} \\\\",
-        f" &  & {sub} \\\\",
+        f"Lp. & $t$ [ms] & {head} & \\multicolumn{{4}}{{c}}{{Odchyłka}} \\\\",
+        f" &  & {sub} & " + " & ".join(MATERIALS.values()) + " \\\\",
         "\\midrule",
     ]
     for p in points:
         lines.append(" & ".join(p) + " \\\\")
     lines.append("\\midrule")
     errs = " & ".join(f"\\multicolumn{{2}}{{c}}{{{e}}}" for e in bold_min([rmse[m] for m in MATERIALS]))
-    lines.append(f"\\multicolumn{{4}}{{c}}{{RMSE [mm]}} & {errs} \\\\")
+    lines.append(f"\\multicolumn{{4}}{{c}}{{RMSE [mm]}} & {errs} & \\multicolumn{{4}}{{c}}{{}} \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]
     return "\n".join(lines) + "\n"
 
@@ -118,21 +131,14 @@ def summary(rows):
     return "\n".join(lines) + "\n"
 
 
-def plot_data(points):
-    lines = ["t " + " ".join(["rzecz"] + list(MATERIALS))]
-    for p in points:
-        lines.append(" ".join([p[1], p[3]] + p[FIRST_MATERIAL_COL + 1 :: 2]))
-    return "\n".join(lines) + "\n"
-
-
 def main():
     sheets = read_sheets()
     OUT.mkdir(exist_ok=True)
     for c in CASES:
         points, rmse = case_data(sheets[c])
         (OUT / f"{c}.tex").write_text(case_table(points, rmse))
-        (OUT / f"{c}.dat").write_text(plot_data(points))
     (OUT / "rmse.tex").write_text(summary(sheets["Podsumowanie"]))
+    export_charts()
 
 
 if __name__ == "__main__":

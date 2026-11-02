@@ -8,9 +8,9 @@ Sprawozdanie w LaTeX-u. Projekt jest połączony z Overleafem przez GitHuba
 | Ścieżka | Zawartość |
 |---|---|
 | `main.tex` | treść sprawozdania |
-| `obliczenia.xlsx` | **wszystkie obliczenia** (pomiary, układ OX, RMSE) – oddajemy prowadzącemu |
+| `obliczenia.xlsx` | **wszystkie obliczenia i wykresy** (pomiary, układ OX, RMSE) – oddajemy prowadzącemu |
 | `obliczenia.py` | eksport wyników z Excela do `tabele/` |
-| `tabele/` | tabele (`.tex`) i dane wykresów (`.dat`) generowane z Excela – **nie edytować ręcznie** |
+| `tabele/` | tabele (`.tex`) i wykresy (`wykresy.pdf`) generowane z Excela – **nie edytować ręcznie** |
 | `img/` | rysunki i zdjęcia z USG użyte w sprawozdaniu |
 | `materialy/` | rzeczywiste pomiary zastawki (PDF) i surowe zdjęcia z USG |
 
@@ -33,7 +33,7 @@ sam Excel do edycji wystarczy, ale do eksportu potrzebny jest LibreOffice) i git
 2. Otwórz `obliczenia.xlsx` (Excel lub LibreOffice) i popraw dane wejściowe
    w arkuszach przypadków: rzeczywiste `y` oraz odczyty `Δy` z fantomu.
    Pozostałe komórki to formuły – nie nadpisuj ich. Zapisz jako `.xlsx`.
-3. Wygeneruj tabele i dane wykresów:
+3. Wygeneruj tabele i wykresy:
    ```bash
    python3 obliczenia.py
    ```

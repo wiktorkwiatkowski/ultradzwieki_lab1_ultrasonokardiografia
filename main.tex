@@ -9,10 +9,8 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{pgfplots}
 \usepackage[hidelinks]{hyperref}
 
-\pgfplotsset{compat=1.18}
 \captionsetup{labelsep=period}
 \captionsetup[figure]{name=Rys.}
 \captionsetup[table]{name=Tab.}
@@ -32,25 +30,14 @@
     \includegraphics[width=\linewidth]{img/pomiary/guma_#1}\caption{guma}
   \end{subfigure}}
 
-% Real vs simulated deflection for one case, data from tabele/<case>.dat.
-\newcommand{\wykres}[1]{%
-  \begin{tikzpicture}
-    \begin{axis}[width=0.95\textwidth, height=7.5cm, grid=major,
-        xlabel={Czas wg zapisu rzeczywistego [ms]}, ylabel={Wychylenie [mm]},
-        legend style={at={(0.5,-0.2)}, anchor=north, legend columns=5}]
-      \addplot[black, very thick, mark=*] table[x=t, y=rzecz] {tabele/#1.dat};
-      \addplot[blue, dashed, mark=square*] table[x=t, y=metal] {tabele/#1.dat};
-      \addplot[orange, dashed, mark=triangle*] table[x=t, y=plastik] {tabele/#1.dat};
-      \addplot[teal, dashed, mark=diamond*] table[x=t, y=siatka] {tabele/#1.dat};
-      \addplot[red, dashed, mark=o] table[x=t, y=guma] {tabele/#1.dat};
-      % Numbers drawn last so the simulated curves do not cover them.
-      \addplot[draw=none, forget plot, point meta={\coordindex+1}, nodes near coords,
-          nodes near coords style={font=\footnotesize\bfseries, anchor=south, yshift=5pt,
-            fill=white, inner sep=1pt}]
-        table[x=t, y=rzecz] {tabele/#1.dat};
-      \legend{Rzeczywiste, Metal, Plastik, Siatka, Guma}
-    \end{axis}
-  \end{tikzpicture}}
+% Chart for the next case, cropped from the workbook printout. Page 1 of
+% tabele/wykresy.pdf is the Podsumowanie sheet, then one page per case in sheet order.
+\newcounter{stronawykresu}
+\setcounter{stronawykresu}{1}
+\newcommand{\wykres}{%
+  \stepcounter{stronawykresu}%
+  \includegraphics[page=\arabic{stronawykresu}, trim=53 107 262 247, clip,
+    width=\textwidth]{tabele/wykresy.pdf}}
 
 % Photos, table and plot for one simulated case.
 \newcommand{\przypadek}[3]{%
@@ -60,15 +47,16 @@
     \caption{Ultrasonokardiogramy fantomu w prezentacji M -- #2.}
   \end{figure}
   \begin{table}[H]
-    \centering\small
+    \centering\small\setlength{\tabcolsep}{3.5pt}
     \input{tabele/#1}
     \caption{Wychylenia punktów charakterystycznych -- #2. $\Delta y$ -- różnica
-      względem poprzedniego punktu, $y$ -- wychylenie względem osi OX [mm]. Pogrubiono najmniejszy błąd.}
+      względem poprzedniego punktu, $y$ -- wychylenie względem osi OX, odchyłka -- różnica $y$ symulacji i~$y$
+      rzeczywistego [mm]. Pogrubiono najmniejszy błąd.}
   \end{table}
   #3\par
   \begin{figure}[H]
     \centering
-    \wykres{#1}
+    \wykres
     \caption{Porównanie przebiegu rzeczywistego z symulacjami -- #2. Numery oznaczają
       punkty charakterystyczne przebiegu rzeczywistego (Lp. w tabeli).}
   \end{figure}}
@@ -259,8 +247,8 @@ Jako miarę błędu symulacji przyjęto błąd średniokwadratowy:
 \end{equation}
 gdzie $N$ -- liczba punktów charakterystycznych przypadku, $y_i^{\mathrm{sym}}$ --
 wychylenie zmierzone na fantomie, $y_i^{\mathrm{rz}}$ -- wychylenie rzeczywiste.
-Obliczenia wykonano w~arkuszu kalkulacyjnym MS Excel (plik \texttt{obliczenia.xlsx}
-dołączony do sprawozdania).
+Obliczenia i~wykresy wykonano w~arkuszu kalkulacyjnym MS Excel (plik
+\texttt{obliczenia.xlsx} dołączony do sprawozdania).
 
 \section{Wyniki pomiarów}
 
