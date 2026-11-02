@@ -43,12 +43,17 @@
       \addplot[orange, dashed, mark=triangle*] table[x=t, y=plastik] {tabele/#1.dat};
       \addplot[teal, dashed, mark=diamond*] table[x=t, y=siatka] {tabele/#1.dat};
       \addplot[red, dashed, mark=o] table[x=t, y=guma] {tabele/#1.dat};
+      % Numbers drawn last so the simulated curves do not cover them.
+      \addplot[draw=none, forget plot, point meta={\coordindex+1}, nodes near coords,
+          nodes near coords style={font=\footnotesize\bfseries, anchor=south, yshift=5pt,
+            fill=white, inner sep=1pt}]
+        table[x=t, y=rzecz] {tabele/#1.dat};
       \legend{Rzeczywiste, Metal, Plastik, Siatka, Guma}
     \end{axis}
   \end{tikzpicture}}
 
 % Photos, table and plot for one simulated case.
-\newcommand{\przypadek}[2]{%
+\newcommand{\przypadek}[3]{%
   \begin{figure}[H]
     \centering
     \zdjecia{#1}
@@ -58,12 +63,14 @@
     \centering\small
     \input{tabele/#1}
     \caption{Wychylenia punktów charakterystycznych -- #2. $\Delta y$ -- różnica
-      względem poprzedniego punktu, $y$ -- wychylenie względem osi OX [mm].}
+      względem poprzedniego punktu, $y$ -- wychylenie względem osi OX [mm]. Pogrubiono najmniejszy błąd.}
   \end{table}
+  #3\par
   \begin{figure}[H]
     \centering
     \wykres{#1}
-    \caption{Porównanie przebiegu rzeczywistego z symulacjami -- #2.}
+    \caption{Porównanie przebiegu rzeczywistego z symulacjami -- #2. Numery oznaczają
+      punkty charakterystyczne przebiegu rzeczywistego (Lp. w tabeli).}
   \end{figure}}
 
 \begin{document}
@@ -258,7 +265,10 @@ dołączony do sprawozdania).
 \section{Wyniki pomiarów}
 
 \subsection{Prawidłowa praca zastawki}
-\przypadek{prawidlowa}{prawidłowa praca zastawki}
+\przypadek{prawidlowa}{prawidłowa praca zastawki}{Najmniejszy błąd uzyskano dla gumy
+  (RMSE $0{,}76$~mm), której odchyłki w~żadnym punkcie nie przekroczyły $1$~mm. Metal
+  i~plastik dały zbliżone wyniki ($1{,}51$ i~$1{,}46$~mm). Największy błąd wystąpił dla
+  siatki ($3{,}02$~mm), z~odchyłką $5$~mm w~punktach 2 i~3.}
 
 Wszystkie płytki odtworzyły kształt przebiegu z~siedmioma punktami. Maksymalne wychylenie
 zawyżono o~$1$--$2$~mm. Metal, plastik i~guma dobrze odwzorowały spadek do ok. $8$~mm po
@@ -266,34 +276,50 @@ pierwszym maksimum. Siatka go nie odtworzyła ($13$~mm zamiast $8$~mm), przez co
 jest wyraźnie największy.
 
 \subsection{Małe zwężenie zastawki dwudzielnej}
-\przypadek{male_zwezenie}{małe zwężenie zastawki dwudzielnej}
+\przypadek{male_zwezenie}{małe zwężenie zastawki dwudzielnej}{Metal i~guma dały najmniejszy,
+  jednakowy błąd (RMSE $1{,}34$~mm), ponieważ ich wychylenia względem osi OX są identyczne.
+  Plastik różni się od nich tylko ostatnim punktem ($1{,}41$~mm). Błąd siatki jest ok. trzy
+  razy większy ($4{,}27$~mm), z~odchyłką do $6$~mm w~punkcie 3.}
 
 Metal, plastik i~guma dały niemal identyczne odczyty z~maksimum zawyżonym o~$2$~mm.
 W~zapisie z~siatki zanikło niewielkie obniżenie po maksimum (trzy punkty na poziomie
 $31$~mm), a~przebieg nie wrócił do linii spoczynkowej.
 
 \subsection{Ciasne zwężenie zastawki dwudzielnej}
-\przypadek{ciasne_zwezenie}{ciasne zwężenie zastawki dwudzielnej}
+\przypadek{ciasne_zwezenie}{ciasne zwężenie zastawki dwudzielnej}{Najmniejszy błąd dała guma
+  (RMSE $1{,}00$~mm), a~jej największa odchyłka to $2$~mm w~ostatnim punkcie. Dla metalu
+  RMSE wyniósł $1{,}73$~mm. Błąd plastiku ($2{,}90$~mm) wynika głównie z~odchyłki $6$~mm
+  w~punkcie 1, a~na błąd siatki ($3{,}29$~mm) składają się odchyłka $5$~mm w~punkcie 1
+  oraz $4$ i~$3$~mm w~dwóch ostatnich punktach.}
 
 Najbliższy zapisowi rzeczywistemu był przebieg z~gumy. Dla plastiku i~siatki pierwszy
 punkt odczytano znacznie wyżej niż w~zapisie rzeczywistym ($7$ i~$6$~mm zamiast $1$~mm),
-co przesunęło też kolejne wartości liczone względem osi OX.
+ale drugi punkt ma już wartość zgodną z~nim ($6$~mm), więc była to odchyłka lokalna.
 
 \subsection{Niedomykalność zastawki dwudzielnej}
-\przypadek{niedomykalnosc}{niedomykalność zastawki dwudzielnej}
+\przypadek{niedomykalnosc}{niedomykalność zastawki dwudzielnej}{Najmniejszy błąd dał metal
+  (RMSE $1{,}50$~mm), a~następnie guma ($1{,}73$~mm) i~plastik ($2{,}18$~mm). Dla wszystkich
+  materiałów pierwszy punkt jest zaniżony o~$2$--$3$~mm. Największy błąd dała siatka
+  ($3{,}50$~mm), której odchyłka narasta do $5$~mm w~ostatnim punkcie.}
 
 Metal, plastik i~guma odtworzyły przebieg z~maksimum zawyżonym o~$1$--$3$~mm. Na siatce
 spadek po maksimum był za mały ($3$~mm zamiast $5$~mm), a~przebieg zakończył się
 $5$~mm nad linią spoczynkową.
 
 \subsection{Wypadanie zastawki dwudzielnej}
-\przypadek{wypadanie}{wypadanie zastawki dwudzielnej}
+\przypadek{wypadanie}{wypadanie zastawki dwudzielnej}{Najmniejszy błąd dał plastik
+  (RMSE $1{,}22$~mm), a~guma ($1{,}35$~mm) i~metal ($1{,}41$~mm) różnią się od niego o~mniej
+  niż $0{,}2$~mm. Wszystkie materiały zawyżyły punkt 1 o~$2$~mm. Błąd siatki ($2{,}45$~mm)
+  wynika głównie z~odchyłki $5$~mm w~punkcie 2.}
 
 Metal, plastik i~guma dały bardzo zbliżone wyniki, z~głównym maksimum zawyżonym
 o~$2$~mm. Na siatce minimum po pierwszym szczycie było płytsze ($13$~mm zamiast $8$~mm).
 
 \subsection{Wypadanie zastawki typu mezotelesystolicznego}
-\przypadek{wypadanie_mezotel}{wypadanie zastawki typu mezotelesystolicznego}
+\przypadek{wypadanie_mezotel}{wypadanie zastawki typu mezotelesystolicznego}{Najmniejszy błąd
+  dała guma (RMSE $0{,}94$~mm), a~następnie metal ($1{,}22$~mm) i~plastik ($1{,}37$~mm).
+  Siatka dała największy błąd ($1{,}97$~mm), z~odchyłką $4$~mm w~punkcie 3, ale jest to
+  jej najmniejszy błąd spośród wszystkich przypadków.}
 
 Jest to najbardziej złożony przebieg (osiem punktów), mimo to wszystkie materiały
 odtworzyły go dobrze. Siatka ponownie nie zeszła po pierwszym maksimum do linii
@@ -331,9 +357,11 @@ Na wynik wpływa kilka źródeł błędów:
   \item rozdzielczość odczytu aparatu wynosi $1$~mm, a~znaczniki ustawiano ręcznie na
     rozmytej krawędzi echa. Różnice RMSE między gumą, metalem i~plastikiem są rzędu
     $0{,}5$~mm, czyli porównywalne z~tą niepewnością. Każdy przypadek zmierzono tylko raz,
-  \item w~układzie względem osi OX błędy kolejnych różnic się sumują, więc błędnie
-    postawiony znacznik na początku przebiegu przesuwa wszystkie dalsze punkty (np. ciasne
-    zwężenie dla plastiku),
+  \item w~układzie względem osi OX wychylenie jest sumą odczytanych różnic, więc błąd
+    zaokrąglenia każdego odczytu przenosi się na dalsze punkty i~odchyłka może narastać
+    (np. niedomykalność dla siatki: $-2$, $2$, $4$, $5$~mm). Błędnie postawiony znacznik
+    pośredni zmienia natomiast tylko swój punkt, bo kolejna różnica to kompensuje (np. ciasne
+    zwężenie dla plastiku: $7$~mm zamiast $1$~mm w~punkcie 1, a~w~punkcie 2 już $6$~mm),
   \item główne maksimum było prawie zawsze zawyżone o~$1$--$3$~mm. Jedną z~możliwych
     przyczyn jest to, że aparat przelicza czas na odległość dla $c = 1540$~m/s, a~w~wodzie
     $c \approx 1480$~m/s. Odległości w~zbiorniku są wtedy zawyżone o~ok. $4\,\%$, co dla

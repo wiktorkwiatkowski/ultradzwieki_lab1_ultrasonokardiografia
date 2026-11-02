@@ -43,8 +43,8 @@ sam Excel do edycji wystarczy, ale do eksportu potrzebny jest LibreOffice) i git
 5. `git add obliczenia.xlsx tabele main.tex`, commit, `git push`, potem
    *Pull* w Overleafie.
 
-Najmniejszy RMSE w wierszu jest pogrubiony w arkuszu `Podsumowanie` (formatowanie
-warunkowe) i w tabeli w sprawozdaniu (wg tej samej reguły).
+Najmniejszy RMSE jest pogrubiony w arkuszu `Podsumowanie` i w wierszach RMSE arkuszy
+przypadków (formatowanie warunkowe) oraz w tabelach w sprawozdaniu (wg tej samej reguły).
 
 ## Kompilacja lokalnie (opcjonalnie)
 

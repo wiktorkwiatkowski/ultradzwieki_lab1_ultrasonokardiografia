@@ -90,7 +90,7 @@ def case_table(points, rmse):
     for p in points:
         lines.append(" & ".join(p) + " \\\\")
     lines.append("\\midrule")
-    errs = " & ".join(f"\\multicolumn{{2}}{{c}}{{{fmt(rmse[m])}}}" for m in MATERIALS)
+    errs = " & ".join(f"\\multicolumn{{2}}{{c}}{{{e}}}" for e in bold_min([rmse[m] for m in MATERIALS]))
     lines.append(f"\\multicolumn{{4}}{{c}}{{RMSE [mm]}} & {errs} \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]
     return "\n".join(lines) + "\n"
