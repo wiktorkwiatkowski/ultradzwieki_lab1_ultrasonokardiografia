@@ -10,7 +10,7 @@ Sprawozdanie w LaTeX-u. Projekt jest połączony z Overleafem przez GitHuba
 | `main.tex` | treść sprawozdania |
 | `obliczenia.xlsx` | **wszystkie obliczenia i wykresy** (pomiary, układ OX, RMSE) – oddajemy prowadzącemu |
 | `obliczenia.py` | eksport wyników z Excela do `tabele/` |
-| `tabele/` | tabele (`.tex`) i wykresy (`wykresy.pdf`) generowane z Excela – **nie edytować ręcznie** |
+| `tabele/` | tabele (`.tex`) i wykresy (`wykres_*.png`) generowane z Excela – **nie edytować ręcznie** |
 | `img/` | rysunki i zdjęcia z USG użyte w sprawozdaniu |
 | `materialy/` | rzeczywiste pomiary zastawki (PDF) i surowe zdjęcia z USG |
 
@@ -27,7 +27,8 @@ w Overleafie.
 ## Zmiana obliczeń (lokalnie)
 
 Potrzebne: Python 3.9+, LibreOffice (skrypt używa go do przeliczenia formuł;
-sam Excel do edycji wystarczy, ale do eksportu potrzebny jest LibreOffice) i git.
+sam Excel do edycji wystarczy, ale do eksportu potrzebny jest LibreOffice), poppler
+(`pdftoppm`, renderuje wykresy) i git.
 
 1. `git pull`
 2. Otwórz `obliczenia.xlsx` (Excel lub LibreOffice) i popraw dane wejściowe

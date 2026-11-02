@@ -1,17 +1,37 @@
-\begin{tabular}{cc cc cc cc cc cc cccc}
+\begin{tabular}{cc c cccc}
 \toprule
-Lp. & $t$ [ms] & \multicolumn{2}{c}{Rzeczywiste} & \multicolumn{2}{c}{Metal} & \multicolumn{2}{c}{Plastik} & \multicolumn{2}{c}{Siatka} & \multicolumn{2}{c}{Guma} & \multicolumn{4}{c}{Odchylenie} \\
- &  & $\Delta y$ & $y$ & $\Delta y$ & $y$ & $\Delta y$ & $y$ & $\Delta y$ & $y$ & $\Delta y$ & $y$ & Metal & Plastik & Siatka & Guma \\
+Lp. & $t$ [ms] & \multicolumn{5}{c}{$y$ [mm]} \\
+\cmidrule(lr){3-7}
+ &  & Rzeczywiste & Metal & Plastik & Siatka & Guma \\
 \midrule
-1 & 188 & 4 & 4 & 5 & 5 & 5 & 5 & 4 & 4 & 4 & 4 & 1 & 1 & 0 & 0 \\
-2 & 300 & 23 & 27 & 24 & 29 & 25 & 30 & 25 & 29 & 25 & 29 & 2 & 3 & 2 & 2 \\
-3 & 440 & -27 & 0 & -30 & -1 & -31 & -1 & -25 & 4 & -29 & 0 & -1 & -1 & 4 & 0 \\
-4 & 575 & 6 & 6 & 8 & 7 & 7 & 6 & 0 & 4 & 7 & 7 & 1 & 0 & -2 & 1 \\
-5 & 635 & -1 & 5 & -2 & 5 & -1 & 5 & -1 & 3 & -2 & 5 & 0 & 0 & -2 & 0 \\
-6 & 740 & 11 & 16 & 13 & 18 & 13 & 18 & 12 & 15 & 12 & 17 & 2 & 2 & -1 & 1 \\
-7 & 820 & -13 & 3 & -15 & 3 & -15 & 3 & -13 & 2 & -13 & 4 & 0 & 0 & -1 & 1 \\
-8 & 1000 & -3 & 0 & -4 & -1 & -3 & 0 & -1 & 1 & -4 & 0 & -1 & 0 & 1 & 0 \\
+1 & 188 & 4 & 5 & 5 & 4 & 4 \\
+2 & 300 & 27 & 29 & 30 & 29 & 29 \\
+3 & 440 & 0 & -1 & -1 & 4 & 0 \\
+4 & 575 & 6 & 7 & 6 & 4 & 7 \\
+5 & 635 & 5 & 5 & 5 & 3 & 5 \\
+6 & 740 & 16 & 18 & 18 & 15 & 17 \\
+7 & 820 & 3 & 3 & 3 & 2 & 4 \\
+8 & 1000 & 0 & -1 & 0 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{tabular}{cc cccc}
+\toprule
+Lp. & $t$ [ms] & \multicolumn{4}{c}{Odchylenie [mm]} \\
+\cmidrule(lr){3-6}
+ &  & Metal & Plastik & Siatka & Guma \\
 \midrule
-\multicolumn{4}{c}{RMSE [mm]} & \multicolumn{2}{c}{1,22} & \multicolumn{2}{c}{1,37} & \multicolumn{2}{c}{1,97} & \multicolumn{2}{c}{\textbf{0,94}} & \multicolumn{4}{c}{} \\
+1 & 188 & 1 & 1 & 0 & 0 \\
+2 & 300 & 2 & 3 & 2 & 2 \\
+3 & 440 & -1 & -1 & 4 & 0 \\
+4 & 575 & 1 & 0 & -2 & 1 \\
+5 & 635 & 0 & 0 & -2 & 0 \\
+6 & 740 & 2 & 2 & -1 & 1 \\
+7 & 820 & 0 & 0 & -1 & 1 \\
+8 & 1000 & -1 & 0 & 1 & 0 \\
+\midrule
+\multicolumn{2}{c}{RMSE [mm]} & 1,22 & 1,37 & 1,97 & \textbf{0,94} \\
 \bottomrule
 \end{tabular}

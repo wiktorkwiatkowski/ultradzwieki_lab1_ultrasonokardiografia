@@ -1,16 +1,35 @@
-\begin{tabular}{cc cc cc cc cc cc cccc}
+\begin{tabular}{cc c cccc}
 \toprule
-Lp. & $t$ [ms] & \multicolumn{2}{c}{Rzeczywiste} & \multicolumn{2}{c}{Metal} & \multicolumn{2}{c}{Plastik} & \multicolumn{2}{c}{Siatka} & \multicolumn{2}{c}{Guma} & \multicolumn{4}{c}{Odchylenie} \\
- &  & $\Delta y$ & $y$ & $\Delta y$ & $y$ & $\Delta y$ & $y$ & $\Delta y$ & $y$ & $\Delta y$ & $y$ & Metal & Plastik & Siatka & Guma \\
+Lp. & $t$ [ms] & \multicolumn{5}{c}{$y$ [mm]} \\
+\cmidrule(lr){3-7}
+ &  & Rzeczywiste & Metal & Plastik & Siatka & Guma \\
 \midrule
-1 & 80 & 17 & 17 & 19 & 19 & 19 & 19 & 18 & 18 & 18 & 18 & 2 & 2 & 1 & 1 \\
-2 & 180 & -9 & 8 & -11 & 8 & -11 & 8 & -5 & 13 & -10 & 8 & 0 & 0 & 5 & 0 \\
-3 & 280 & -1 & 7 & -1 & 7 & -2 & 6 & -1 & 12 & -2 & 6 & 0 & -1 & 5 & -1 \\
-4 & 330 & 6 & 13 & 8 & 15 & 6 & 12 & 3 & 15 & 7 & 13 & 2 & -1 & 2 & 0 \\
-5 & 485 & -19 & -6 & -21 & -6 & -21 & -9 & -18 & -3 & -20 & -7 & 0 & -3 & 3 & -1 \\
-6 & 670 & 5 & -1 & 7 & 1 & 8 & -1 & 2 & -1 & 6 & -1 & 2 & 0 & 0 & 0 \\
-7 & 780 & 1 & 0 & 1 & 2 & 1 & 0 & 1 & 0 & 0 & -1 & 2 & 0 & 0 & -1 \\
+1 & 80 & 17 & 19 & 19 & 18 & 18 \\
+2 & 180 & 8 & 8 & 8 & 13 & 8 \\
+3 & 280 & 7 & 7 & 6 & 12 & 6 \\
+4 & 330 & 13 & 15 & 12 & 15 & 13 \\
+5 & 485 & -6 & -6 & -9 & -3 & -7 \\
+6 & 670 & -1 & 1 & -1 & -1 & -1 \\
+7 & 780 & 0 & 2 & 0 & 0 & -1 \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{tabular}{cc cccc}
+\toprule
+Lp. & $t$ [ms] & \multicolumn{4}{c}{Odchylenie [mm]} \\
+\cmidrule(lr){3-6}
+ &  & Metal & Plastik & Siatka & Guma \\
 \midrule
-\multicolumn{4}{c}{RMSE [mm]} & \multicolumn{2}{c}{1,51} & \multicolumn{2}{c}{1,46} & \multicolumn{2}{c}{3,02} & \multicolumn{2}{c}{\textbf{0,76}} & \multicolumn{4}{c}{} \\
+1 & 80 & 2 & 2 & 1 & 1 \\
+2 & 180 & 0 & 0 & 5 & 0 \\
+3 & 280 & 0 & -1 & 5 & -1 \\
+4 & 330 & 2 & -1 & 2 & 0 \\
+5 & 485 & 0 & -3 & 3 & -1 \\
+6 & 670 & 2 & 0 & 0 & 0 \\
+7 & 780 & 2 & 0 & 0 & -1 \\
+\midrule
+\multicolumn{2}{c}{RMSE [mm]} & 1,51 & 1,46 & 3,02 & \textbf{0,76} \\
 \bottomrule
 \end{tabular}

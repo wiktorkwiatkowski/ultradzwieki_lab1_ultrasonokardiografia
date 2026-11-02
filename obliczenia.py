@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Reads the results computed in obliczenia.xlsx and writes LaTeX tables and the
-chart PDF to tabele/. All calculations and charts live in the spreadsheet; this
-script only exports them. Requires LibreOffice (soffice) to read the workbook."""
+"""Reads the results computed in obliczenia.xlsx and writes LaTeX tables and chart
+images to tabele/. All calculations and charts live in the spreadsheet; this script
+only exports them. Requires LibreOffice (soffice) to read the workbook and poppler
+(pdftoppm) to render the charts."""
 
 import csv
 import shutil
@@ -31,6 +32,9 @@ HEADER_ROWS = 3
 FIRST_MATERIAL_COL = 4
 # Columns further right are helpers for the chart, not part of the table.
 TABLE_COLS = 16
+# Chart position on a case sheet's printed page, in points: x, y, width, height.
+CHART_BOX = (53, 247, 526.89, 241.3)
+CHART_DPI = 300
 
 
 def find_soffice():
@@ -74,11 +78,23 @@ def read_sheets():
 
 
 def export_charts():
-    # One page per sheet, main.tex crops the chart out of each case page.
+    # Rendered to images because a cropped PDF page keeps the sheet's table as
+    # invisible, selectable text in the report.
+    pdftoppm = shutil.which("pdftoppm")
+    if not pdftoppm:
+        raise SystemExit("pdftoppm not found, install poppler (poppler-utils)")
+    x, y, w, h = (round(v * CHART_DPI / 72) for v in CHART_BOX)
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         convert("pdf", tmp)
-        shutil.copyfile(tmp / f"{XLSX.stem}.pdf", OUT / "wykresy.pdf")
+        # One page per sheet: Podsumowanie first, then the cases in CASES order.
+        for page, c in enumerate(CASES, start=2):
+            subprocess.run(
+                [pdftoppm, "-png", "-singlefile", "-r", str(CHART_DPI), "-f", str(page), "-l", str(page),
+                 "-x", str(x), "-y", str(y), "-W", str(w), "-H", str(h),
+                 str(tmp / f"{XLSX.stem}.pdf"), str(OUT / f"wykres_{c}")],
+                check=True,
+            )
 
 
 def fmt(x):
@@ -92,21 +108,32 @@ def case_data(rows):
 
 
 def case_table(points, rmse):
-    groups = ["Rzeczywiste"] + list(MATERIALS.values())
-    head = " & ".join(f"\\multicolumn{{2}}{{c}}{{{g}}}" for g in groups)
-    sub = " & ".join(["$\\Delta y$ & $y$"] * len(groups))
+    materials = " & ".join(MATERIALS.values())
     lines = [
-        f"\\begin{{tabular}}{{cc{' cc' * len(groups)} cccc}}",
+        "\\begin{tabular}{cc c cccc}",
         "\\toprule",
-        f"Lp. & $t$ [ms] & {head} & \\multicolumn{{4}}{{c}}{{Odchylenie}} \\\\",
-        f" &  & {sub} & " + " & ".join(MATERIALS.values()) + " \\\\",
+        "Lp. & $t$ [ms] & \\multicolumn{5}{c}{$y$ [mm]} \\\\",
+        "\\cmidrule(lr){3-7}",
+        f" &  & Rzeczywiste & {materials} \\\\",
         "\\midrule",
     ]
     for p in points:
-        lines.append(" & ".join(p) + " \\\\")
+        # Lp. and t, then y (every other column, skipping dy).
+        lines.append(" & ".join(p[:2] + p[3:12:2]) + " \\\\")
+    lines += ["\\bottomrule", "\\end{tabular}", "", "\\bigskip", ""]
+    lines += [
+        "\\begin{tabular}{cc cccc}",
+        "\\toprule",
+        "Lp. & $t$ [ms] & \\multicolumn{4}{c}{Odchylenie [mm]} \\\\",
+        "\\cmidrule(lr){3-6}",
+        f" &  & {materials} \\\\",
+        "\\midrule",
+    ]
+    for p in points:
+        lines.append(" & ".join(p[:2] + p[12:]) + " \\\\")
     lines.append("\\midrule")
-    errs = " & ".join(f"\\multicolumn{{2}}{{c}}{{{e}}}" for e in bold_min([rmse[m] for m in MATERIALS]))
-    lines.append(f"\\multicolumn{{4}}{{c}}{{RMSE [mm]}} & {errs} & \\multicolumn{{4}}{{c}}{{}} \\\\")
+    errs = " & ".join(bold_min([rmse[m] for m in MATERIALS]))
+    lines.append(f"\\multicolumn{{2}}{{c}}{{RMSE [mm]}} & {errs} \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]
     return "\n".join(lines) + "\n"
 
