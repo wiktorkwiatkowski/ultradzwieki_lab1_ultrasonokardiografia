@@ -100,11 +100,12 @@ a~odebraniem echa, wyznacza się odległość od głowicy do granicy odbijające
 \end{equation}
 gdzie czynnik $2$ wynika z~tego, że fala pokonuje drogę do granicy i~z~powrotem.
 W~tkankach miękkich przyjmuje się $c \approx 1540$~m/s, co daje ok. $13$~$\mu$s opóźnienia
-echa na każdy centymetr głębokości.
+echa na każdy centymetr głębokości \cite{stoylen}.
 
 \subsection{Prezentacje A, M i 2D}
 
-Odebrane echa można zobrazować na kilka sposobów (rys.~\ref{fig:prezentacje}):
+Odebrane echa można zobrazować na kilka sposobów \cite{golanowski}
+(rys.~\ref{fig:prezentacje}):
 \begin{itemize}
   \item \textbf{prezentacja A} (\emph{amplitude}) -- na osi poziomej odkładany jest czas,
     czyli głębokość, a~na osi pionowej amplituda ech. Ruch obiektu objawia się
@@ -120,21 +121,21 @@ Odebrane echa można zobrazować na kilka sposobów (rys.~\ref{fig:prezentacje})
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\textwidth]{img/prezentacje_a_m.jpg}
-  \caption{Sposób otrzymywania obrazu ruchomego obiektu w~prezentacjach A, M i~2D
-    \cite{golanowski}.}
+  \caption{Obraz ruchomego obiektu w~prezentacjach A, M i~2D (na podstawie
+    \cite{golanowski}).}
   \label{fig:prezentacje}
 \end{figure}
 
 \subsection{Rekonstrukcja obrazu w prezentacji M}
 
 W~prezentacji M głowica jest nieruchoma i~wysyła wiązkę stale wzdłuż tej samej linii.
-Każdy kolejny impuls daje jedną linię obrazu: echa z~różnych głębokości są zamieniane na
-punkty o~jasności proporcjonalnej do ich amplitudy i~ustawiane wzdłuż osi pionowej zgodnie
-z~zależnością $d = ct/2$. Kolejne linie są rysowane obok siebie, więc oś pozioma staje się
+Każdy kolejny impuls daje jedną linię obrazu \cite{stoylen}: echa z~różnych głębokości są
+zamieniane na punkty o~jasności zależnej od ich amplitudy i~ustawiane wzdłuż osi pionowej
+zgodnie z~zależnością $d = ct/2$. Kolejne linie są rysowane obok siebie, więc oś pozioma staje się
 osią czasu. Gdy granica tkanki (np. płatek zastawki) zbliża się do głowicy lub od niej
 oddala, jej punkt przesuwa się po kolejnych liniach i~powstaje krzywa ruchu
 (rys.~\ref{fig:zasada_m}). Z~naniesionych skal głębokości i~czasu można odczytać wychylenie
-struktury, jej prędkość oraz czasy otwierania i~zamykania zastawki.
+struktury, jej prędkość oraz czasy otwierania i~zamykania zastawki \cite{golanowski}.
 
 \begin{figure}[H]
   \centering
@@ -152,11 +153,12 @@ się w~czwartym lewym międzyżebrzu przy mostku. Echo przedniego płatka zastaw
 tuż za echem przegrody, w~świetle lewej komory, w~odległości ok. $5$--$7$~cm od głowicy.
 Płatek wykonuje szybki ruch otwarcia w~kierunku głowicy, następnie powolne zamykanie
 w~okresie rozkurczu komory, ponowne otwarcie po skurczu przedsionka i~zamknięcie na czas
-skurczu komory (rys.~\ref{fig:krzywa}). Wychylenie zastawki to odległość punktów
-charakterystycznych krzywej od linii odniesienia, mierzona
-wzdłuż osi głębokości. Przy zmianach chorobowych kształt krzywej się zmienia, np. przy
-zwężeniu zastawki zamykanie jest spowolnione, a~przy wypadaniu płatek cofa się w~czasie
-skurczu w~stronę przedsionka.
+skurczu komory \cite{golanowski} (rys.~\ref{fig:krzywa}). Wychylenie zastawki to położenie
+punktów charakterystycznych krzywej względem osi czasu OX, mierzone
+wzdłuż osi głębokości \cite{instrukcja}. Przy zmianach chorobowych kształt krzywej się
+zmienia, np. przy ciasnym zwężeniu zamykanie jest spowolnione (wychylenie maleje tylko
+z~$31$ do $30$~mm w~ciągu ok. $230$~ms \cite{pomiary}), a~przy wypadaniu płatek cofa się
+w~stronę lewego przedsionka \cite{nhlbi}.
 
 \begin{figure}[H]
   \centering
@@ -171,8 +173,8 @@ skurczu w~stronę przedsionka.
 Stanowisko (rys.~\ref{fig:stanowisko}) składa się z~fantomu ruchu zastawki oraz aparatu
 USG. Komputer PC steruje przez interfejs RS-232 sterownikiem silników krokowych, który za
 pośrednictwem mechanizmu przesuwu i~aluminiowego ramienia porusza płytką zanurzoną
-w~szklanym zbiorniku z~wodą. Płytka imituje przedni płatek zastawki i~porusza się zgodnie
-z~funkcją ruchu wyznaczoną z~rzeczywistych ultrasonokardiogramów. Do ścianki zbiornika
+w~szklanym zbiorniku z~wodą \cite{instrukcja}. Płytka pełni rolę sztucznej zastawki
+i~porusza się według zadanej funkcji ruchu. Do ścianki zbiornika
 przyłożona jest liniowa głowica USG, a~aparat rejestruje ruch płytki w~prezentacji M.
 Badano cztery płytki wykonane z~metalu, plastiku, siatki z~włókna i~gumy.
 
@@ -357,6 +359,12 @@ Wnioski końcowe opracowano wspólnie przez wszystkich członków grupy.
     amplitudy ruchu zastawki dwudzielnej serca}, instrukcja do ćwiczenia.
   \bibitem{pomiary} \emph{Rzeczywiste pomiary zastawki}, tabele 7.1--7.6, materiały do
     ćwiczenia.
+  \bibitem{stoylen} A. St{\o}ylen, \emph{Basic ultrasound for clinicians}, NTNU,
+    \url{https://stoylen.folk.ntnu.no/strainrate/Basic_ultrasound.html}
+    (dostęp: 03.11.2026).
+  \bibitem{nhlbi} National Heart, Lung, and Blood Institute, \emph{Heart Valve Diseases:
+    Types}, \url{https://www.nhlbi.nih.gov/health/heart-valve-diseases/types}
+    (dostęp: 03.11.2026).
 \end{thebibliography}
 
 \end{document}
